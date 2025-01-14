@@ -1,54 +1,72 @@
 #include <iostream>
-#include <set>
+#include <string>
 
 using namespace std;
 
 
-int main(){
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    set<int> list;
     int count;
+    int set = 0;
     string tempString;
-    int tempNum;
+    int temp;
 
     cin >> count;
 
-    for (int i = 0; i < count; i++)
+
+    for(int i = 0; i<count; i++)
     {
         cin >> tempString;
 
-        if(tempString == "add"){
-            cin >> tempNum;
-            list.insert(tempNum);
+        if (tempString == "add")
+        {
+            cin >> temp;
+            set |= 1 << temp;
+            continue;
         }
-        if(tempString == "remove"){
-            cin >> tempNum;
-            list.erase(tempNum);
+        else if (tempString == "remove")
+        {
+            cin >> temp;
+            if(set & (1<<temp)){
+                set &= ~(1<<temp);
+            }
+            continue;
         }
-        if(tempString == "check"){
-            cin >> tempNum;
-            if(list.find(tempNum)!=list.end()){
+        else if (tempString == "check")
+        {
+            cin >> temp;
+            if(set & (1<<temp)){
                 cout << 1 << '\n';
-            } else {
+            } else{
                 cout << 0 << '\n';
             }
+            continue;
         }
-        if(tempString == "toggle"){
-            cin >> tempNum;
-            if(!list.erase(tempNum)){
-                list.insert(tempNum);
+        else if (tempString == "toggle")
+        {
+            cin >> temp;
+            if(set & (1<<temp)){
+                set &= ~(1<<temp);
+            } else{
+                set |= 1 << temp;
             }
+
+            continue;
         }
-        if(tempString == "all"){
-            list.clear();
-            for (int i = 1; i < 21; i++)
-            {
-                list.insert(i);
-            }
+        else if (tempString == "all")
+        {
+            set |= (1<<21) - 1;
+            continue;
         }
-        if(tempString == "empty"){
-            list.clear();
+        else if (tempString == "empty")
+        {
+            set = 0;
+            continue;
         }
     }
+
     return 0;
 }
