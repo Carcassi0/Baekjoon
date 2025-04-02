@@ -1,57 +1,76 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
-void dfs(int node, vector<int> graph[], vector<int> &visited, int &count)
+int xVector[] = {0, 0, -1, 1};
+int yVector[] = {1, -1, 0, 0};
+
+void BFS(int x, int y, int m, int n, vector<vector<int>> &map, vector<vector<int>> &visitedMap)
 {
-    visited[node] = 1;
-    for (int neighbor : graph[node])
+    queue<pair<int,int>> q;
+    q.push({x,y});
+    visitedMap[y][x] = 1;
+
+    while (!q.empty())
     {
-        if (!visited[neighbor])
+        int cx = q.front().first;
+        int cy = q.front().second;
+        q.pop();
+
+        for (int i = 0; i < 4; i++)
         {
-            count++;
-            dfs(neighbor, graph, visited, count);
+            int nx = cx + xVector[i];
+            int ny = cy + yVector[i];
+
+            if(nx>=0 && nx<m && ny>=0 && ny<n && !visitedMap[ny][nx] && map[ny][nx]){
+                visitedMap[ny][nx] = 1;
+                q.push({nx,ny});
+            }
         }
+        
     }
+    
 }
 
 int main()
 {
 
-    int testCase;
-    int temp;
-    int count = 0;
-    int m, n;
-    int k;
-    int x, y;
-    bool flag = false;
+    int t, m, n, k;
 
-    vector<int> answer;
+    cin >> t; // test case
 
-    for (int i = 0; i < testCase; i++)
+    for (int i = 0; i < t; i++)
     {
-        cin >> m >> n >> k;
-        vector<vector<int>> map(m, vector<int>(n, 0));
-        vector<vector<int>> visitedMap(m, vector<int>(n, 0));
-        for (int i = 0; i < k; i++)
+
+        cin >> m >> n >> k; // x, y축
+
+        int count = 0;
+
+        vector<vector<int>> map(n, vector<int>(m, 0));
+        vector<vector<int>> visitedMap(n, vector<int>(m, 0));
+
+        for (int i = 0; i < k; i++) // 배추 위치 입력
         {
+            int x,y;
             cin >> x >> y;
-            map[x][y] = 1;
+            map[y][x] = 1;
         }
 
-        for (int i = 0; i < map.size(); i++)
+        for (int y = 0; y < n; y++)
         {
-            for (int j = 0; j < map[i].size(); j++)
+            for (int x = 0; x < m; x++)
             {
-                if(map[i][j]==1){
-
+                if (map[y][x] == 1 && !visitedMap[y][x])
+                {
+                    BFS(x, y, m, n, map, visitedMap);
+                    count++;
                 }
             }
-            
         }
 
-        answer.push_back(temp);
+        cout << count << '\n';
     }
 
     return 0;
